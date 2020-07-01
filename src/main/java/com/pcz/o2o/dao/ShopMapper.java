@@ -21,4 +21,12 @@ public interface ShopMapper {
      * @return
      */
     int updateShop(Shop shop);
+
+    /**
+     * 根据shop id查询店铺
+     *
+     * @param shopId
+     * @return
+     */
+    Shop queryByShopId(long shopId);
 }

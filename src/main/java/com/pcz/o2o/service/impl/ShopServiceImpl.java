@@ -65,4 +65,39 @@ public class ShopServiceImpl implements ShopService {
         String shopImgAddr = ImageUtil.generateThumbnail(inputStream, fileName, destination);
         shop.setShopImg(shopImgAddr);
     }
+
+    @Override
+    public Shop getByShopId(long shopId) {
+        return shopMapper.queryByShopId(shopId);
+    }
+
+    @Transactional
+    @Override
+    public ShopExecution modifyShop(Shop shop, InputStream shopImgInputStream, String fileName) {
+        if (shop == null || shop.getShopId() == null) {
+            return new ShopExecution(ShopStateEnum.NULL_SHOP);
+        }
+
+        try {
+            if (shopImgInputStream != null) {
+                Shop shopBean = shopMapper.queryByShopId(shop.getShopId());
+                if (StringUtils.isNotBlank(shopBean.getShopImg())) {
+                    ImageUtil.deleteFileOrPath(shopBean.getShopImg());
+                }
+
+                addShopImg(shop, shopImgInputStream, fileName);
+            }
+
+            shop.setLastEditTime(new Date());
+            int rows = shopMapper.updateShop(shop);
+            if (rows <= 0) {
+                return new ShopExecution(ShopStateEnum.INNER_ERROR);
+            } else {
+                shop = shopMapper.queryByShopId(shop.getShopId());
+                return new ShopExecution(ShopStateEnum.SUCCESS, shop);
+            }
+        } catch (Exception e) {
+            throw new ShopOperationException("modifyShop error: " + e.getMessage());
+        }
+    }
 }

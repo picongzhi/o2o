@@ -86,4 +86,19 @@ public class ImageUtil {
                 .outputQuality(0.8f)
                 .toFile("/Users/picongzhi/workspace/java/idea/o2o/src/main/resources/cat_thumb.jpeg");
     }
+
+    public static void deleteFileOrPath(String filePath) {
+        File fileOrPath = new File(PathUtil.getImgBasePath() + filePath);
+        if (!fileOrPath.exists()) {
+            return;
+        }
+
+        if (fileOrPath.isDirectory()) {
+            File[] files = fileOrPath.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                files[i].delete();
+            }
+        }
+        fileOrPath.delete();
+    }
 }

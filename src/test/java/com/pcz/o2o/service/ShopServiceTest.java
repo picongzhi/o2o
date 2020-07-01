@@ -52,4 +52,15 @@ public class ShopServiceTest extends BaseTest {
 
         inputStream.close();
     }
+
+    @Test
+    public void modifyShopTest() throws Exception {
+        File shopImg = new File("/Users/picongzhi/workspace/java/idea/o2o/src/main/resources/cheer.jpeg");
+        InputStream inputStream = new FileInputStream(shopImg);
+        Shop shop = new Shop();
+        shop.setShopId(1L);
+        shop.setShopDesc("cheer");
+        ShopExecution shopExecution = shopService.modifyShop(shop, inputStream, shopImg.getName());
+        Assert.assertNotNull(shopExecution);
+    }
 }

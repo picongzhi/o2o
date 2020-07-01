@@ -75,4 +75,10 @@ public class ShopMapperTest extends BaseTest {
         int effected = shopMapper.updateShop(shop);
         Assert.assertEquals(1, effected);
     }
+
+    @Test
+    public void queryByShopIdTest() {
+        Shop shop = shopMapper.queryByShopId(1L);
+        Assert.assertNotNull(shop);
+    }
 }
