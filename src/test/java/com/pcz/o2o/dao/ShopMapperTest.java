@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.List;
 
 public class ShopMapperTest extends BaseTest {
     @Autowired
@@ -80,5 +81,21 @@ public class ShopMapperTest extends BaseTest {
     public void queryByShopIdTest() {
         Shop shop = shopMapper.queryByShopId(1L);
         Assert.assertNotNull(shop);
+    }
+
+    @Test
+    public void queryShopListTest() {
+        Shop shopCondition = new Shop();
+        shopCondition.setShopName("测试");
+        List<Shop> shopList = shopMapper.queryShopList(shopCondition, 0, 5);
+        Assert.assertNotNull(shopList);
+    }
+
+    @Test
+    public void queryShopCountTest() {
+        Shop shopCondition = new Shop();
+        shopCondition.setShopName("测试");
+        int count = shopMapper.queryShopCount(shopCondition);
+        Assert.assertEquals(10, count);
     }
 }

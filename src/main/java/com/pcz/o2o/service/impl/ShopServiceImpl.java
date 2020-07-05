@@ -7,6 +7,7 @@ import com.pcz.o2o.enums.ShopStateEnum;
 import com.pcz.o2o.exceptions.ShopOperationException;
 import com.pcz.o2o.service.ShopService;
 import com.pcz.o2o.util.ImageUtil;
+import com.pcz.o2o.util.PageCalculator;
 import com.pcz.o2o.util.PathUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author picongzhi
@@ -99,5 +101,22 @@ public class ShopServiceImpl implements ShopService {
         } catch (Exception e) {
             throw new ShopOperationException("modifyShop error: " + e.getMessage());
         }
+    }
+
+    @Override
+    public ShopExecution getShopList(Shop shopCondition, int pageIndex, int pageSize) {
+        int rowIndex = PageCalculator.calculateRowIndex(pageIndex, pageSize);
+        List<Shop> shopList = shopMapper.queryShopList(shopCondition, rowIndex, pageSize);
+        int count = shopMapper.queryShopCount(shopCondition);
+
+        ShopExecution shopExecution = new ShopExecution();
+        if (shopList != null) {
+            shopExecution.setShopList(shopList);
+            shopExecution.setCount(count);
+        } else {
+            shopExecution.setState(ShopStateEnum.INNER_ERROR.getState());
+        }
+
+        return shopExecution;
     }
 }

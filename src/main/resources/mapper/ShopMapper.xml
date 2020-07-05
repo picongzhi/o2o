@@ -86,4 +86,78 @@
           AND s.`owner_id` = p.`user_id`
           AND s.`shop_id` = #{shopId}
     </select>
+
+    <select id="queryShopList" resultMap="shopResultMap">
+        SELECT s.`shop_id`,
+        s.`shop_name`,
+        s.`shop_desc`,
+        s.`shop_addr`,
+        s.`phone`,
+        s.`shop_img`,
+        s.`priority`,
+        s.`create_time`,
+        s.`last_edit_time`,
+        s.`enable_status`,
+        s.`advice`,
+        a.`area_id`,
+        a.`area_name`,
+        sc.`shop_category_id`,
+        sc.`shop_category_name`,
+        p.`user_id`,
+        p.`name`
+        FROM `shop` s,
+        `area` a,
+        `shop_category` sc,
+        `person_info` p
+        <where>
+            <if test="shopCondition.shopCategory != null and shopCondition.shopCategory.shopCategoryId != null">
+                AND s.`shop_category_id` = #{shopCondition.shopCategory.shopCategoryId}
+            </if>
+            <if test="shopCondition.area != null and shopCondition.area.areaId != null">
+                AND s.`area_d` = #{shopCondition.area.areaId}
+            </if>
+            <if test="shopCondition.shopName != null">
+                AND s.`shop_name` LIKE '%${shopCondition.shopName}%'
+            </if>
+            <if test="shopCondition.enableStatus != null">
+                AND s.`enable_status` = #{shopCondition.enableStatus}
+            </if>
+            <if test="shopCondition.owner != null and shopCondition.owner.userId != null">
+                AND s.`owner_id` = #{shopCondition.owner.userId}
+            </if>
+            AND s.`area_id` = a.`area_id`
+            AND s.`shop_category_id` = sc.`shop_category_id`
+            AND s.`owner_id` = p.`user_id`
+        </where>
+        ORDER BY s.`priority` DESC
+        LIMIT #{rowIndex}, #{pageSize}
+    </select>
+
+    <select id="queryShopCount" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM `shop` s,
+        `area` a,
+        `shop_category` sc,
+        `person_info` p
+        <where>
+            <if test="shopCondition.shopCategory != null and shopCondition.shopCategory.shopCategoryId != null">
+                AND s.`shop_category_id` = #{shopCondition.shopCategory.shopCategoryId}
+            </if>
+            <if test="shopCondition.area != null and shopCondition.area.areaId != null">
+                AND s.`area_d` = #{shopCondition.area.areaId}
+            </if>
+            <if test="shopCondition.shopName != null">
+                AND s.`shop_name` LIKE '%${shopCondition.shopName}%'
+            </if>
+            <if test="shopCondition.enableStatus != null">
+                AND s.`enable_status` = #{shopCondition.enableStatus}
+            </if>
+            <if test="shopCondition.owner != null and shopCondition.owner.userId != null">
+                AND s.`owner_id` = #{shopCondition.owner.userId}
+            </if>
+            AND s.`area_id` = a.`area_id`
+            AND s.`shop_category_id` = sc.`shop_category_id`
+            AND s.`owner_id` = p.`user_id`
+        </where>
+    </select>
 </mapper>

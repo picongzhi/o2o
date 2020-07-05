@@ -250,4 +250,55 @@ public class ShopManagementController {
 
         return modelMap;
     }
+
+    @RequestMapping(value = "/getShopList", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> getShopList(HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<>();
+        PersonInfo personInfo = new PersonInfo();
+        personInfo.setUserId(1L);
+        personInfo.setName("picongzhi");
+
+        request.getSession().setAttribute("user", personInfo);
+        personInfo = (PersonInfo) request.getSession().getAttribute("user");
+        try {
+            Shop shopCondition = new Shop();
+            shopCondition.setOwner(personInfo);
+            ShopExecution shopExecution = shopService.getShopList(shopCondition, 1, 100);
+            modelMap.put("shopList", shopExecution.getShopList());
+            modelMap.put("user", personInfo);
+            modelMap.put("success", true);
+        } catch (Exception e) {
+            modelMap.put("success", false);
+            modelMap.put("errMsg", e.getMessage());
+        }
+
+        return modelMap;
+    }
+
+    @RequestMapping(value = "/getShopManagementInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> getShopManagementInfo(HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<>();
+        long shopId = HttpServletRequestUtil.getLong(request, "shopId");
+        if (shopId <= 0) {
+            Object currentShopObj = request.getSession().getAttribute("currentShop");
+            if (currentShopObj == null) {
+                modelMap.put("redirect", true);
+                modelMap.put("url", "/shop/shopList");
+            } else {
+                Shop currentShop = (Shop) currentShopObj;
+                modelMap.put("redirect", false);
+                modelMap.put("shopId", currentShop.getShopId());
+            }
+        } else {
+            Shop currentShop = new Shop();
+            currentShop.setShopId(shopId);
+            request.getSession().setAttribute("currentShop", currentShop);
+            modelMap.put("redirect", false);
+            modelMap.put("shopId", currentShop.getShopId());
+        }
+
+        return modelMap;
+    }
 }

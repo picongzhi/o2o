@@ -63,4 +63,12 @@ public class ShopServiceTest extends BaseTest {
         ShopExecution shopExecution = shopService.modifyShop(shop, inputStream, shopImg.getName());
         Assert.assertNotNull(shopExecution);
     }
+
+    @Test
+    public void getShopListTest() {
+        Shop shopCondition = new Shop();
+        shopCondition.setShopName("测试");
+        ShopExecution shopExecution = shopService.getShopList(shopCondition, 1, 5);
+        Assert.assertNotNull(shopExecution);
+    }
 }
